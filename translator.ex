@@ -28,7 +28,7 @@ defmodule Translator do
       def t(_locale, _path, _bindings), do: {:error, :no_translation}
     end
 
-    IO.puts Macro.to_string(final_ast)
+    # IO.puts Macro.to_string(final_ast)
 
     final_ast
   end
