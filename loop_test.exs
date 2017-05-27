@@ -1,8 +1,10 @@
-ExUnit.start
+# ExUnit.start
+Code.require_file("assertion.ex", __DIR__)
 Code.require_file("loop.ex", __DIR__)
 
 defmodule LoopTest do
-  use ExUnit.Case
+  # use ExUnit.Case
+  use Assertion
   import Loop
 
   test "Is it really that easy?" do
@@ -42,3 +44,5 @@ defmodule LoopTest do
     assert_received :done
   end
 end
+
+LoopTest.run

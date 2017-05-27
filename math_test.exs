@@ -1,3 +1,5 @@
+Code.require_file("assertion.ex", __DIR__)
+
 defmodule MathTest do
   use Assertion
 
@@ -21,6 +23,7 @@ defmodule MathTest do
 
   test "integers are really integers" do
     assert is_integer(10)
-    assert nil
   end
 end
+
+MathTest.run

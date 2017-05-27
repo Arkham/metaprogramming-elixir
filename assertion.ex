@@ -32,6 +32,12 @@ defmodule Assertion do
       Assertion.Test.assert(value)
     end
   end
+
+  defmacro assert_received(message) do
+    quote bind_quoted: [message: message] do
+      Assertion.Test.assert_received(message)
+    end
+  end
 end
 
 defmodule Assertion.Test do
@@ -58,7 +64,6 @@ defmodule Assertion.Test do
       """
     }
   end
-
   def assert(:==, lhs, rhs) when lhs == rhs, do: :ok
   def assert(:==, lhs, rhs) do
     {:fail, """
@@ -67,7 +72,6 @@ defmodule Assertion.Test do
       """
     }
   end
-
   def assert(:<, lhs, rhs) when lhs < rhs, do: :ok
   def assert(:<, lhs, rhs) do
     {:fail, """
@@ -76,7 +80,6 @@ defmodule Assertion.Test do
       """
     }
   end
-
   def assert(:<=, lhs, rhs) when lhs <= rhs, do: :ok
   def assert(:<=, lhs, rhs) do
     {:fail, """
@@ -85,7 +88,6 @@ defmodule Assertion.Test do
       """
     }
   end
-
   def assert(:>, lhs, rhs) when lhs > rhs, do: :ok
   def assert(:>, lhs, rhs) do
     {:fail, """
@@ -94,7 +96,6 @@ defmodule Assertion.Test do
       """
     }
   end
-
   def assert(:>=, lhs, rhs) when lhs >= rhs, do: :ok
   def assert(:>=, lhs, rhs) do
     {:fail, """
@@ -102,5 +103,17 @@ defmodule Assertion.Test do
       to be greater or equal than: #{rhs}
       """
     }
+  end
+
+  def assert_received(message) do
+    receive do
+      ^message -> :ok
+    after
+      0 -> {:fail, """
+        Expected: process #{inspect self()}
+        to have received message #{inspect message}
+      """
+      }
+    end
   end
 end
