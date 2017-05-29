@@ -1,4 +1,7 @@
 defmodule Assertion do
+  defmodule AssertionError do
+    defexception message: "an assertion error has occurred"
+  end
 
   defmacro __using__(_options) do
     quote do
@@ -36,6 +39,12 @@ defmodule Assertion do
   defmacro assert_received(message) do
     quote bind_quoted: [message: message] do
       Assertion.Test.assert_received(message)
+    end
+  end
+
+  defmacro assert_raise(error_type, fun) do
+    quote bind_quoted: [error_type: error_type, fun: fun] do
+      Assertion.Test.assert_raise(error_type, fun)
     end
   end
 end
@@ -114,6 +123,29 @@ defmodule Assertion.Test do
         to have received message #{inspect message}
       """
       }
+    end
+  end
+
+  def assert_raise(error_type, fun) do
+    try do
+      fun.()
+
+    rescue
+      error ->
+        name = error.__struct__
+
+        cond do
+          name == error_type ->
+            :ok
+          true ->
+            reraise Assertion.AssertionError,
+              [message: "Expected function to raise error #{inspect error_type}"]
+        end
+    else
+      _ ->
+        {:fail, """
+          Expected function to raise error #{inspect error_type}
+          """}
     end
   end
 end

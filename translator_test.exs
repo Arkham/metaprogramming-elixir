@@ -1,8 +1,8 @@
-ExUnit.start
+Code.require_file("assertion.ex", __DIR__)
 Code.require_file("translator.ex", __DIR__)
 
-defmodule LoopTest do
-  use ExUnit.Case
+defmodule TranslatorTest do
+  use Assertion
 
   defmodule Example do
     use Translator
@@ -86,3 +86,5 @@ defmodule LoopTest do
     """
   end
 end
+
+TranslatorTest.run
